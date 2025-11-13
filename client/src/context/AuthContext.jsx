@@ -1,127 +1,156 @@
 /**
  * Authentication Context
- * Manages global authentication state
+ * Provides authentication state and methods throughout the app
  */
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import { toast } from 'react-hot-toast';
+import * as authService from '../services/authService';
 
 const AuthContext = createContext(null);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Configure axios defaults
-  useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    } else {
-      delete axios.defaults.headers.common['Authorization'];
-    }
-  }, [token]);
-
-  // Check if user is logged in on mount
+  // Initialize auth state from localStorage on mount
   useEffect(() => {
     const initAuth = async () => {
-      if (token) {
-        try {
-          // Verify token is still valid
-          const decoded = jwtDecode(token);
-          if (decoded.exp * 1000 < Date.now()) {
-            // Token expired
-            logout();
-          } else {
-            // Fetch user data
-            const response = await axios.get('/api/auth/me');
-            setUser(response.data.data);
+      try {
+        const storedUser = authService.getStoredUser();
+        const storedToken = authService.getStoredToken();
+
+        if (storedUser && storedToken) {
+          // Verify token is still valid by fetching user profile
+          try {
+            const response = await authService.getMe();
+            if (response.success && response.data.user) {
+              setUser(response.data.user);
+              setIsAuthenticated(true);
+            } else {
+              // Token is invalid, clear storage
+              await authService.logout();
+              setUser(null);
+              setIsAuthenticated(false);
+            }
+          } catch (error) {
+            // Token is invalid or expired
+            await authService.logout();
+            setUser(null);
+            setIsAuthenticated(false);
           }
-        } catch (error) {
-          console.error('Auth initialization error:', error);
-          logout();
+        } else {
+          setUser(null);
+          setIsAuthenticated(false);
         }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        setUser(null);
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     initAuth();
   }, []);
 
+  /**
+   * Sign up a new user
+   */
   const signup = async (userData) => {
     try {
-      const response = await axios.post('/api/auth/signup', userData);
-      const { token: newToken, user: newUser } = response.data.data;
-      setToken(newToken);
-      setUser(newUser);
-      localStorage.setItem('token', newToken);
-      return { success: true, data: response.data };
+      setLoading(true);
+      const response = await authService.signup(userData);
+
+      if (response.success && response.data.user) {
+        setUser(response.data.user);
+        setIsAuthenticated(true);
+        toast.success('Account created successfully!');
+        return { success: true, user: response.data.user };
+      }
+
+      return { success: false, message: response.message };
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Signup failed';
-      return { success: false, error: errorMessage };
+      const message =
+        error.response?.data?.message || 'Failed to create account';
+      toast.error(message);
+      return { success: false, message };
+    } finally {
+      setLoading(false);
     }
   };
 
+  /**
+   * Login user
+   */
   const login = async (credentials) => {
     try {
-      const response = await axios.post('/api/auth/login', credentials);
-      const { token: newToken, user: newUser } = response.data.data;
-      setToken(newToken);
-      setUser(newUser);
-      localStorage.setItem('token', newToken);
-      return { success: true, data: response.data };
+      setLoading(true);
+      const response = await authService.login(credentials);
+
+      if (response.success && response.data.user) {
+        setUser(response.data.user);
+        setIsAuthenticated(true);
+        toast.success('Login successful!');
+        return { success: true, user: response.data.user };
+      }
+
+      return { success: false, message: response.message };
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Login failed';
-      return { success: false, error: errorMessage };
+      const message = error.response?.data?.message || 'Failed to login';
+      toast.error(message);
+      return { success: false, message };
+    } finally {
+      setLoading(false);
     }
   };
 
+  /**
+   * Logout user
+   */
   const logout = async () => {
     try {
-      // Call logout endpoint if user is authenticated
-      if (token) {
-        await axios.post('/api/auth/logout');
-      }
+      await authService.logout();
+      setUser(null);
+      setIsAuthenticated(false);
+      toast.success('Logged out successfully');
     } catch (error) {
       console.error('Logout error:', error);
-    } finally {
-      // Clear state regardless of API call success
-      setToken(null);
+      // Still clear local state even if API call fails
       setUser(null);
-      localStorage.removeItem('token');
-      delete axios.defaults.headers.common['Authorization'];
+      setIsAuthenticated(false);
     }
   };
 
+  /**
+   * Update user profile in context
+   */
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
   const value = {
     user,
-    token,
     loading,
+    isAuthenticated,
     signup,
     login,
     logout,
     updateUser,
-    isAuthenticated: !!user
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export default AuthContext;

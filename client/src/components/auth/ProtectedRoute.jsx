@@ -1,29 +1,30 @@
 /**
  * Protected Route Component
- * Redirects unauthorized users to login page
+ * Wraps routes that require authentication
  */
 
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Loading from '../common/Loading';
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
-  const location = useLocation();
+  const { isAuthenticated, loading } = useAuth();
 
+  // Show loading while checking authentication status
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loading />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loading size="lg" />
       </div>
     );
   }
 
-  if (!user) {
-    // Redirect to login while saving the attempted location
-    return <Navigate to="/login" state={{ from: location }} replace />;
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
   }
 
+  // Render children if authenticated
   return children;
 };
 

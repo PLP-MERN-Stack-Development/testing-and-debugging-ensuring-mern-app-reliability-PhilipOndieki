@@ -1,27 +1,19 @@
 /**
- * Auth Routes
- * Routes for user authentication
+ * Authentication Routes
+ * Defines routes for user authentication
  */
 
 const express = require('express');
-const {
-  signup,
-  login,
-  logout,
-  getMe,
-  updateProfile
-} = require('../controllers/authController');
-const { protect } = require('../middleware/authMiddleware');
-
 const router = express.Router();
+const { signup, login, getMe, logout } = require('../controllers/authController');
+const { protect } = require('../middleware/authMiddleware');
 
 // Public routes
 router.post('/signup', signup);
 router.post('/login', login);
 
-// Protected routes (require authentication)
-router.post('/logout', protect, logout);
+// Protected routes
 router.get('/me', protect, getMe);
-router.put('/profile', protect, updateProfile);
+router.post('/logout', protect, logout);
 
 module.exports = router;

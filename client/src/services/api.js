@@ -17,11 +17,11 @@ const api = axios.create({
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    // Add auth token if needed in the future
-    // const token = localStorage.getItem('token');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    // Add auth token to requests
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -41,6 +41,13 @@ api.interceptors.response.use(
       switch (status) {
       case 400:
         console.error('Bad Request:', data.message || 'Invalid request');
+        break;
+      case 401:
+        console.error('Unauthorized:', data.message || 'Authentication required');
+        // Optionally redirect to login or clear token
+        break;
+      case 403:
+        console.error('Forbidden:', data.message || 'Access denied');
         break;
       case 404:
         console.error('Not Found:', data.message || 'Resource not found');

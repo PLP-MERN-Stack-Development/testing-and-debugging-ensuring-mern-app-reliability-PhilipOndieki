@@ -1,6 +1,6 @@
-# Professional MERN Bug Tracker - Frontend
+# Professional MERN Bug Tracker
 
-A production-ready Bug Tracker frontend built with React, optimized for scalability, maintainability, and performance. This application connects to an Express/MongoDB backend API and features a beautiful dark-themed Kanban board interface.
+A production-ready full-stack Bug Tracker application built with the MERN stack (MongoDB, Express, React, Node.js), featuring JWT authentication, comprehensive testing (70%+ coverage), and professional debugging techniques. This application showcases industry best practices for testing, debugging, and maintaining reliable software.
 
 ![Bug-tracker dashboard](image.png)
 ![Creating a new bug](image-1.png)
@@ -9,6 +9,8 @@ A production-ready Bug Tracker frontend built with React, optimized for scalabil
 ## Features
 
 ### Core Functionality
+- **JWT Authentication**: Secure user registration, login, and session management
+- **Protected Routes**: Role-based access control with protected routes
 - **Kanban Board**: Visual bug tracking with 4 status columns (Open, In Progress, Resolved, Closed)
 - **CRUD Operations**: Create, read, update, and delete bugs with full validation
 - **Advanced Filtering**: Search by title/description, filter by priority, severity, and status
@@ -17,36 +19,58 @@ A production-ready Bug Tracker frontend built with React, optimized for scalabil
 - **Dark Theme**: Professional dark theme with carefully chosen color palette
 
 ### Technical Highlights
+- **JWT Authentication**: Secure token-based authentication with bcrypt password hashing
+- **Comprehensive Testing**: 70%+ code coverage with unit, integration, and E2E tests
 - **Type-Safe Validation**: Zod schemas with React Hook Form
 - **Error Boundary**: Graceful error handling with user-friendly fallbacks
 - **Performance Optimized**: Code splitting, lazy loading, memoization
 - **Accessibility**: WCAG AA compliant, keyboard navigation, ARIA labels
-- **Testing**: 70%+ code coverage with Jest and React Testing Library
+- **Professional Logging**: Winston logging with multiple levels and daily rotation
+- **API Security**: Rate limiting, helmet security headers, CORS configuration
 
 ## Technology Stack
 
-### Core
+### Backend
+- **Node.js** - JavaScript runtime
+- **Express 5** - Web application framework
+- **MongoDB** - NoSQL database
+- **Mongoose** - ODM for MongoDB
+- **JWT** - JSON Web Token authentication
+- **bcryptjs** - Password hashing
+- **Winston** - Logging library
+- **Helmet** - Security headers
+- **Express Rate Limit** - Rate limiting
+- **Express Validator** - Input validation
+- **CORS** - Cross-origin resource sharing
+
+### Frontend
 - **React 18.2** - UI library with hooks
 - **Vite 5.0** - Fast build tool and dev server
 - **React Router 6** - Client-side routing
 - **Tailwind CSS 3.3** - Utility-first styling
-
-### State & Data
 - **Context API** - Global state management
 - **Axios** - HTTP client with interceptors
 - **React Hook Form** - Form handling
 - **Zod** - Schema validation
-
-### UI Components
 - **Headless UI** - Accessible component primitives
 - **Lucide React** - Beautiful icon library
 - **React Hot Toast** - Toast notifications
+- **@dnd-kit** - Drag and drop utilities
 
-### Development
+### Testing & Debugging
+- **Jest** - Testing framework (Backend & Frontend)
+- **Supertest** - HTTP assertion library
+- **React Testing Library** - Component testing
+- **MongoDB Memory Server** - In-memory test database
+- **Cypress** - E2E testing framework (configured)
+- **Winston** - Structured logging
+- **React Error Boundaries** - Error handling
+
+### Development Tools
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
-- **Jest** - Testing framework
-- **React Testing Library** - Component testing
+- **Nodemon** - Auto-restart server
+- **VS Code Debugger** - Breakpoint debugging
 
 ## Project Structure
 
@@ -79,29 +103,88 @@ client/
 
 ### Prerequisites
 - Node.js 18+ and npm
-- Backend server running on http://localhost:5000
+- MongoDB (local or Atlas connection)
+- Git
 
 ### Installation
 
-1. **Install dependencies:**
+1. **Clone the repository:**
    ```bash
+   git clone <repository-url>
+   cd testing-and-debugging-ensuring-mern-app-reliability-PhilipOndieki
+   ```
+
+2. **Install backend dependencies:**
+   ```bash
+   cd server
    npm install
    ```
 
-2. **Configure environment:**
+3. **Install frontend dependencies:**
    ```bash
-   cp .env.example .env
-   # Edit .env if needed (default: http://localhost:5000/api)
+   cd ../client
+   npm install
    ```
 
-3. **Start development server:**
+4. **Configure environment variables:**
+
+   **Backend** (`server/.env`):
+   ```env
+   PORT=5000
+   NODE_ENV=development
+   MONGO_URI=mongodb://localhost:27017/bug-tracker
+   JWT_SECRET=your-super-secret-jwt-key-change-in-production
+   JWT_EXPIRE=7d
+   CORS_ORIGIN=http://localhost:3000
+   ```
+
+   **Frontend** (`client/.env`):
+   ```env
+   VITE_API_URL=http://localhost:5000/api
+   VITE_NODE_ENV=development
+   ```
+
+5. **Start MongoDB:**
    ```bash
+   # If using local MongoDB
+   mongod
+   ```
+
+6. **Start the backend server:**
+   ```bash
+   cd server
+   npm run dev
+   ```
+   Server will run on http://localhost:5000
+
+7. **Start the frontend development server:**
+   ```bash
+   cd client
    npm run dev
    ```
    Application will open at http://localhost:3000
 
 ### Available Scripts
 
+#### Backend (`server/`)
+```bash
+# Development
+npm start            # Start server (production)
+npm run dev          # Start server with nodemon
+
+# Testing
+npm test             # Run all tests with coverage
+npm run test:unit    # Run unit tests only
+npm run test:integration  # Run integration tests only
+npm run test:watch   # Run tests in watch mode
+npm run test:verbose # Run tests with verbose output
+
+# Code Quality
+npm run lint         # Lint code
+npm run lint:fix     # Fix linting issues
+```
+
+#### Frontend (`client/`)
 ```bash
 # Development
 npm run dev          # Start dev server with HMR
@@ -114,6 +197,7 @@ npm run preview      # Preview production build
 npm test             # Run all tests with coverage
 npm run test:unit    # Run unit tests only
 npm run test:watch   # Run tests in watch mode
+npm run test:e2e     # Run Cypress E2E tests (when installed)
 
 # Code Quality
 npm run lint         # Lint code
@@ -180,37 +264,152 @@ const { register, handleSubmit, formState: { errors } } = useForm({
 
 ## Testing Strategy
 
+This application implements a comprehensive testing strategy covering unit, integration, and E2E tests. For detailed information, see [TESTING_STRATEGY.md](./TESTING_STRATEGY.md).
+
 ### Test Coverage
-- **Utilities**: Helper functions, formatters, validators
-- **Hooks**: Custom hooks like useDebounce
-- **Components**: Button, Badge, Input, and other UI components
-- **Integration**: End-to-end user flows
+
+**Backend:**
+- **Unit Tests**: User model, auth middleware, validation utilities, API response formatters
+- **Integration Tests**: Auth routes, bug CRUD routes, database operations
+
+**Frontend:**
+- **Unit Tests**: Components (Button, Badge, Input), hooks (useDebounce), utilities (formatters, helpers)
+- **Integration Tests**: Component interactions with Context API
+- **E2E Tests**: Authentication flows, bug CRUD operations, navigation (Cypress)
+
+### Coverage Goals
+- Statements: ≥70%
+- Branches: ≥60%
+- Functions: ≥70%
+- Lines: ≥70%
 
 ### Running Tests
+
+**Backend:**
 ```bash
-# Run tests with coverage report
+cd server
+
+# Run all tests with coverage
+npm test
+
+# Run specific test types
+npm run test:unit
+npm run test:integration
+
+# Watch mode for development
+npm run test:watch
+```
+
+**Frontend:**
+```bash
+cd client
+
+# Run all tests with coverage
 npm test
 
 # Watch mode for development
 npm run test:watch
 
-# Verbose output
-npm run test:verbose
+# E2E tests (when Cypress is installed)
+npm run cypress:open
 ```
 
 ### Test Examples
+
+**Backend Unit Test:**
 ```javascript
-// Component test
+describe('User Model', () => {
+  it('should hash password on save', async () => {
+    const user = await User.create({
+      name: 'Test User',
+      email: 'test@example.com',
+      password: 'password123',
+    });
+
+    const userWithPassword = await User.findById(user._id).select('+password');
+    expect(userWithPassword.password).not.toBe('password123');
+    expect(userWithPassword.password).toMatch(/^\$2[aby]\$\d{1,2}\$/);
+  });
+});
+```
+
+**Backend Integration Test:**
+```javascript
+describe('POST /api/auth/login', () => {
+  it('should login user with valid credentials', async () => {
+    const response = await request(app)
+      .post('/api/auth/login')
+      .send({ email: 'test@example.com', password: 'password123' })
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.data).toHaveProperty('token');
+  });
+});
+```
+
+**Frontend Component Test:**
+```javascript
 test('renders bug card with correct information', () => {
   render(<BugCard bug={mockBug} />);
   expect(screen.getByText('Test Bug')).toBeInTheDocument();
 });
+```
 
-// Hook test
-test('debounces value changes', () => {
-  const { result, rerender } = renderHook(() => useDebounce('test', 500));
-  // ...
+**Cypress E2E Test:**
+```javascript
+describe('Authentication', () => {
+  it('should login successfully', () => {
+    cy.visit('/login');
+    cy.get('input[name="email"]').type('test@example.com');
+    cy.get('input[name="password"]').type('password123');
+    cy.get('button[type="submit"]').click();
+    cy.url().should('eq', 'http://localhost:3000/');
+  });
 });
+```
+
+## Debugging
+
+This application implements professional debugging techniques for both server and client-side code. For detailed information, see [DEBUGGING_TECHNIQUES.md](./DEBUGGING_TECHNIQUES.md).
+
+### Key Debugging Features
+
+**Backend:**
+- **Winston Logging**: Structured logging with multiple levels (error, warn, info, debug)
+- **Request Logging**: All HTTP requests logged with duration and status
+- **Error Handling**: Centralized error handler with detailed logging
+- **VS Code Debugger**: Configured launch settings for breakpoint debugging
+
+**Frontend:**
+- **React DevTools**: Inspect components, props, and state
+- **Browser DevTools**: Console logging, network monitoring, localStorage inspection
+- **Error Boundaries**: Catch and display React errors gracefully
+- **Axios Interceptors**: Log all API requests and responses
+
+### Common Debugging Scenarios
+
+**Authentication Issues:**
+```javascript
+// Check token in localStorage
+const token = localStorage.getItem('token');
+console.log('Token:', token);
+
+// Verify token is sent in requests (Network tab)
+Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+```
+
+**Performance Issues:**
+```javascript
+// Track component renders
+useEffect(() => {
+  console.log('Component rendered');
+});
+
+// Measure API response time
+const start = Date.now();
+await fetchBugs();
+console.log(`Request took: ${Date.now() - start}ms`);
 ```
 
 ## Performance Optimization

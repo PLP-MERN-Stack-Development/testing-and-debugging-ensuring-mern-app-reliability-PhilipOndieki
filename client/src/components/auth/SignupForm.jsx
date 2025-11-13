@@ -168,26 +168,19 @@ const SignupForm = () => {
             </Button>
           </form>
 
-          {/* Divider */}
-          <div className="mt-6 relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border"></div>
+          {/* Sign In Link - Fixed (No overlapping divider) */}
+          <div className="mt-8 pt-6 border-t border-border">
+            <p className="text-sm text-gray-400 mb-3 text-center">
+              Already have an account?
+            </p>
+            <div className="text-center">
+              <Link
+                to="/login"
+                className="inline-block px-6 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors text-sm"
+              >
+                Sign in instead
+              </Link>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-surface text-text-secondary">
-                Already have an account?
-              </span>
-            </div>
-          </div>
-
-          {/* Sign In Link */}
-          <div className="mt-6 text-center">
-            <Link
-              to="/login"
-              className="text-primary hover:text-primary-hover font-medium transition-colors"
-            >
-              Sign in instead
-            </Link>
           </div>
         </div>
 

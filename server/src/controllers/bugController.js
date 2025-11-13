@@ -30,9 +30,18 @@ const createBug = async (req, res, next) => {
       createdBy: req.body.createdBy,
     };
 
+    // If user is authenticated, set creator field
+    if (req.user) {
+      bugData.creator = req.user._id;
+      // Also set createdBy to user's name if not provided
+      if (!bugData.createdBy) {
+        bugData.createdBy = req.user.name;
+      }
+    }
+
     const bug = await Bug.create(bugData);
 
-    logger.info(`Bug created: ${bug._id}`);
+    logger.info(`Bug created: ${bug._id} by ${req.user ? req.user.email : 'anonymous'}`);
     return createdResponse(res, bug, SUCCESS_MESSAGES.BUG_CREATED);
   } catch (error) {
     logger.error(`Error creating bug: ${error.message}`);

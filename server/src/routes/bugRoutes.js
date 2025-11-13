@@ -22,6 +22,7 @@ const {
   queryValidation,
   handleValidationErrors,
 } = require('../middleware/validator');
+const { protect, optionalAuth } = require('../middleware/authMiddleware');
 
 /**
  * @route   GET /api/bugs/stats
@@ -33,9 +34,9 @@ router.get('/stats', getBugStats);
 /**
  * @route   POST /api/bugs
  * @desc    Create a new bug
- * @access  Public
+ * @access  Private (requires authentication)
  */
-router.post('/', createBugValidation, handleValidationErrors, createBug);
+router.post('/', protect, createBugValidation, handleValidationErrors, createBug);
 
 /**
  * @route   GET /api/bugs
@@ -54,22 +55,22 @@ router.get('/:id', validateObjectId, handleValidationErrors, getBugById);
 /**
  * @route   PUT /api/bugs/:id
  * @desc    Update a bug
- * @access  Public
+ * @access  Private (requires authentication)
  */
-router.put('/:id', validateObjectId, updateBugValidation, handleValidationErrors, updateBug);
+router.put('/:id', protect, validateObjectId, updateBugValidation, handleValidationErrors, updateBug);
 
 /**
  * @route   PATCH /api/bugs/:id
  * @desc    Partial update (status change)
- * @access  Public
+ * @access  Private (requires authentication)
  */
-router.patch('/:id', validateObjectId, patchBugValidation, handleValidationErrors, patchBug);
+router.patch('/:id', protect, validateObjectId, patchBugValidation, handleValidationErrors, patchBug);
 
 /**
  * @route   DELETE /api/bugs/:id
  * @desc    Delete a bug
- * @access  Public
+ * @access  Private (requires authentication)
  */
-router.delete('/:id', validateObjectId, handleValidationErrors, deleteBug);
+router.delete('/:id', protect, validateObjectId, handleValidationErrors, deleteBug);
 
 module.exports = router;

@@ -65,7 +65,10 @@ const bugSchema = new mongoose.Schema(
     },
     createdBy: {
       type: String,
-      required: [true, 'Created by is required'],
+      required: function() {
+        // Make createdBy optional if creator is provided
+        return !this.creator;
+      },
       trim: true,
       minlength: [
         VALIDATION_RULES.CREATED_BY.MIN_LENGTH,
@@ -75,6 +78,12 @@ const bugSchema = new mongoose.Schema(
         VALIDATION_RULES.CREATED_BY.MAX_LENGTH,
         `Created by must not exceed ${VALIDATION_RULES.CREATED_BY.MAX_LENGTH} characters`,
       ],
+    },
+    creator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      // Not required for backward compatibility with existing bugs
+      required: false
     },
   },
   {
@@ -99,6 +108,7 @@ bugSchema.index({ status: 1 });
 bugSchema.index({ priority: 1 });
 bugSchema.index({ severity: 1 });
 bugSchema.index({ createdBy: 1 });
+bugSchema.index({ creator: 1 });
 bugSchema.index({ createdAt: -1 });
 
 // Compound index for common queries

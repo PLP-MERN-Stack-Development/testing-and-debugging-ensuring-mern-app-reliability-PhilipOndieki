@@ -13,9 +13,6 @@ let mongoServer;
 // Setup MongoDB Memory Server before all tests
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create({
-    binary: {
-      version: '4.0.28',
-    },
   });
   const mongoUri = mongoServer.getUri();
   await mongoose.connect(mongoUri);

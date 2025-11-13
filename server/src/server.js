@@ -23,9 +23,9 @@ const startServer = async () => {
     // Start Express server
     const server = app.listen(PORT, () => {
       logger.info(`Server running in ${NODE_ENV} mode on port ${PORT}`);
-      console.log(`🚀 Server is running on http://localhost:${PORT}`);
-      console.log(`📊 Health check: http://localhost:${PORT}/health`);
-      console.log(`🐛 Bug API: http://localhost:${PORT}/api/bugs`);
+      console.log(`Server is running on http://localhost:${PORT}`);
+      console.log(`Health check: http://localhost:${PORT}/health`);
+      console.log(`Bug API: http://localhost:${PORT}/api/bugs`);
     });
 
     // Graceful shutdown

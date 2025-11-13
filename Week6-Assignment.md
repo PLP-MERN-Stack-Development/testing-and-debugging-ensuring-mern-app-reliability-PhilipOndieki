@@ -86,4 +86,4 @@ Implement comprehensive testing strategies for a MERN stack application, includi
    - Screenshots of test coverage reports
    - Examples of debugging techniques implemented
 6. Your submission will be automatically graded based on the criteria in the autograding configuration
-7. The instructor will review your submission after the autograding is complete 
+7. The instructor will review your submission after the autograding is complete nstructor will review your submission after the autograding is complete 

@@ -612,4 +612,3 @@ For issues and questions, please open an issue in the repository.
 
 ---
 
-**Built with ❤️ for the PLP MERN Stack Development Program**

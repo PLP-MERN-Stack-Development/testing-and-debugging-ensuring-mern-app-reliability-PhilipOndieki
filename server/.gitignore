@@ -1,29 +1,133 @@
-# Dependencies
+# Node modules
 node_modules/
 
-# Environment files
+# Build output
+dist/
+build/
+out/
+.vite/
+.cache/
+
+# Environment files (keep .env.example in repo)
 .env
 .env.local
-.env.test.local
+.env.*.local
+.env.test
+.env.production
+.env.development
 
 # Logs
 logs/
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Coverage
+# Coverage reports
 coverage/
+coverage-*.json
+lcov.info
+clover.xml
+coverage-final.json
+.nyc_output/
+
+# Test / temp
+jest-cache/
+.tmp/
+*.tmp
+*.temp
+*.bak
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# IDE
+# Editor / IDE
 .vscode/
 .idea/
-*.swp
-*.swo
+*.sublime-workspace
+*.sublime-project
+*.iml
 
-# Build
+# Database / runtime files
+*.sqlite
+*.db
+pids/
+*.pid
+*.seed
+
+# Keys / certificates
+*.key
+*.pem
+
+# Misc
+.cache-loader/
+.sass-cache/
+```// filepath: /home/p-ondieki/Documents/plp-mernstack/week-6/assignment-wk6/testing-and-debugging-ensuring-mern-app-reliability-PhilipOndieki/server/.gitignore
+# Node modules
+node_modules/
+
+# Build output
 dist/
 build/
+out/
+.vite/
+.cache/
+
+# Environment files (keep .env.example in repo)
+.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+.env.development
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Coverage reports
+coverage/
+coverage-*.json
+lcov.info
+clover.xml
+coverage-final.json
+.nyc_output/
+
+# Test / temp
+jest-cache/
+.tmp/
+*.tmp
+*.temp
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.iml
+
+# Database / runtime files
+*.sqlite
+*.db
+pids/
+*.pid
+*.seed
+
+# Keys / certificates
+*.key
+*.pem
+
+# Misc
+.cache-loader/
+.sass-cache/

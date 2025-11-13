@@ -1,0 +1,115 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+out/
+.vite/
+.vite-cache/
+.cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+.env.development
+
+# Coverage reports
+coverage/
+coverage-*.json
+lcov.info
+clover.xml
+coverage-final.json
+lcov-report/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.iml
+
+# Test / temporary files
+jest-cache/
+*.tmp
+*.temp
+*.bak
+
+# SSL / keys
+*.key
+*.pem
+
+# Misc
+.cache-loader/
+.sass-cache/
+```// filepath: /home/p-ondieki/Documents/plp-mernstack/week-6/assignment-wk6/testing-and-debugging-ensuring-mern-app-reliability-PhilipOndieki/client/.gitignore
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+out/
+.vite/
+.vite-cache/
+.cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+.env.development
+
+# Coverage reports
+coverage/
+coverage-*.json
+lcov.info
+clover.xml
+coverage-final.json
+lcov-report/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.iml
+
+# Test / temporary files
+jest-cache/
+*.tmp
+*.temp
+*.bak
+
+# SSL / keys
+*.key
+*.pem
+
+# Misc
+.cache-loader/
+.sass-cache/

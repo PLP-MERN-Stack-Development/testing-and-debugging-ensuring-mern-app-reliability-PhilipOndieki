@@ -3,7 +3,7 @@
  * Reusable text input with label and error handling
  */
 
-import { forwardRef } from 'prop-types';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { cn } from '../../utils/helpers';
 

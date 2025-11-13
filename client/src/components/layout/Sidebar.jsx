@@ -51,7 +51,7 @@ const Sidebar = ({ onClose }) => {
       {/* Footer */}
       <div className="p-4 border-t border-border">
         <p className="text-xs text-text-tertiary text-center">
-          © 2024 Bug Tracker
+          © 2025 Bug Tracker
         </p>
       </div>
     </div>

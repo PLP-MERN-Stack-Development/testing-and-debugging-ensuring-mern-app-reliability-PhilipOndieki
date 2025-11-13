@@ -13,10 +13,13 @@ let mongoServer;
 // Setup MongoDB Memory Server before all tests
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create({
+    binary: {
+      version: '7.0.14', // Specify a compatible MongoDB version
+    },
   });
   const mongoUri = mongoServer.getUri();
   await mongoose.connect(mongoUri);
-});
+}, 60000); // Increase timeout for MongoDB download
 
 // Clean database between tests
 afterEach(async () => {

@@ -8,6 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const bugRoutes = require('./routes/bugRoutes');
+const authRoutes = require('./routes/authRoutes');
 const requestLogger = require('./middleware/requestLogger');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 
@@ -60,6 +61,7 @@ app.get('/health', (req, res) => {
 
 // API Routes
 const apiPrefix = process.env.API_PREFIX || '/api';
+app.use(`${apiPrefix}/auth`, authRoutes);
 app.use(`${apiPrefix}/bugs`, bugRoutes);
 
 // 404 Handler

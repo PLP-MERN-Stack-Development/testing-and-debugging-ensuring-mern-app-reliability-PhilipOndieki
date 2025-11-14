@@ -1,15 +1,34 @@
 /**
  * BugCard Component
- * Individual bug card in Kanban board
+ * Individual bug card in Kanban board - Draggable
  */
 
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import { Edit, Trash2, Calendar } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Edit, Trash2, Calendar, GripVertical } from 'lucide-react';
 import Badge from '../common/Badge';
 import { formatDate } from '../../utils/formatters';
 
-const BugCard = ({ bug, onEdit, onDelete, onClick }) => {
+const BugCard = ({ bug, onEdit, onDelete, onClick, isDragging }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging: isSortableDragging,
+  } = useSortable({
+    id: bug._id || bug.id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isSortableDragging ? 0.5 : 1,
+  };
+
   const handleEdit = (e) => {
     e.stopPropagation();
     onEdit(bug);
@@ -20,16 +39,33 @@ const BugCard = ({ bug, onEdit, onDelete, onClick }) => {
     onDelete(bug._id || bug.id);
   };
 
+  const handleClick = (e) => {
+    // Don't trigger onClick if clicking on action buttons
+    if (e.target.closest('button')) return;
+    if (onClick) onClick(bug);
+  };
+
   return (
     <div
-      onClick={() => onClick && onClick(bug)}
-      className="bg-secondary rounded-lg p-4 hover:bg-tertiary transition-colors cursor-pointer border border-border group"
+      ref={setNodeRef}
+      style={style}
+      onClick={handleClick}
+      className={`
+        bg-secondary rounded-lg p-4 transition-colors border border-border group
+        ${isDragging ? 'shadow-2xl' : 'shadow-sm hover:shadow-md'}
+        ${isSortableDragging ? 'cursor-grabbing' : 'cursor-pointer md:cursor-grab'}
+        ${onClick ? 'active:scale-95' : ''}
+      `}
     >
-      {/* Card Header */}
-      <div className="flex justify-between items-start mb-3">
-        <h3 className="text-base font-semibold text-text-primary line-clamp-2 flex-1 mr-2">
-          {bug.title}
-        </h3>
+      {/* Drag Handle - Desktop Only */}
+      <div className="hidden md:flex items-center justify-between mb-3">
+        <div
+          {...attributes}
+          {...listeners}
+          className="p-1 hover:bg-border rounded cursor-grab active:cursor-grabbing"
+        >
+          <GripVertical size={16} className="text-text-tertiary" />
+        </div>
         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={handleEdit}
@@ -46,6 +82,31 @@ const BugCard = ({ bug, onEdit, onDelete, onClick }) => {
             <Trash2 size={16} className="text-accent-danger" />
           </button>
         </div>
+      </div>
+
+      {/* Mobile - Action Buttons Always Visible */}
+      <div className="md:hidden flex justify-end gap-1 mb-3">
+        <button
+          onClick={handleEdit}
+          className="p-1.5 hover:bg-border rounded transition-colors"
+          aria-label="Edit bug"
+        >
+          <Edit size={16} className="text-text-secondary" />
+        </button>
+        <button
+          onClick={handleDelete}
+          className="p-1.5 hover:bg-border rounded transition-colors"
+          aria-label="Delete bug"
+        >
+          <Trash2 size={16} className="text-accent-danger" />
+        </button>
+      </div>
+
+      {/* Card Header */}
+      <div className="mb-3">
+        <h3 className="text-base font-semibold text-text-primary line-clamp-2">
+          {bug.title}
+        </h3>
       </div>
 
       {/* Card Body */}
@@ -67,7 +128,9 @@ const BugCard = ({ bug, onEdit, onDelete, onClick }) => {
       <div className="pt-3 border-t border-border space-y-1.5">
         <div className="flex items-center justify-between text-xs">
           <span className="text-text-tertiary">Created by:</span>
-          <span className="text-text-secondary font-medium">{bug.createdBy}</span>
+          <span className="text-text-secondary font-medium">
+            {bug.createdBy}
+          </span>
         </div>
         <div className="flex items-center justify-between text-xs text-text-tertiary">
           <Calendar size={12} className="inline mr-1" />
@@ -93,10 +156,19 @@ BugCard.propTypes = {
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onClick: PropTypes.func,
+  isDragging: PropTypes.bool,
 };
 
-export default memo(BugCard, (prevProps, nextProps) => {
-  return (prevProps.bug._id || prevProps.bug.id) === (nextProps.bug._id || nextProps.bug.id) &&
+BugCard.defaultProps = {
+  isDragging: false,
+};
+
+export default memo(
+  BugCard,
+  (prevProps, nextProps) =>
+    (prevProps.bug._id || prevProps.bug.id) ===
+      (nextProps.bug._id || nextProps.bug.id) &&
     prevProps.bug.title === nextProps.bug.title &&
-    prevProps.bug.status === nextProps.bug.status;
-});
+    prevProps.bug.status === nextProps.bug.status &&
+    prevProps.isDragging === nextProps.isDragging
+);

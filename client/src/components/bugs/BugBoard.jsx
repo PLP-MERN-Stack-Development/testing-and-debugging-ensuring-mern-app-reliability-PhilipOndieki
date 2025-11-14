@@ -35,6 +35,7 @@ const BugBoard = ({ toggleMobileMenu }) => {
     fetchBugs,
     createBug,
     updateBug,
+    patchBug,
     deleteBug,
     setFilters,
     clearFilters,
@@ -175,9 +176,9 @@ const BugBoard = ({ toggleMobileMenu }) => {
       const bugId = bugForStatusChange._id || bugForStatusChange.id;
       const oldStatus = bugForStatusChange.status;
 
-      // Optimistic update
+      // Optimistic update - use patchBug for partial status update
       try {
-        await updateBug(bugId, { status: newStatus });
+        await patchBug(bugId, { status: newStatus });
         toast.success(`Bug moved to ${newStatus.replace('-', ' ')}`);
         setIsMobileStatusOpen(false);
         setBugForStatusChange(null);
@@ -187,7 +188,7 @@ const BugBoard = ({ toggleMobileMenu }) => {
         // The useBugs hook should handle reverting the optimistic update
       }
     },
-    [bugForStatusChange, updateBug]
+    [bugForStatusChange, patchBug]
   );
 
   // Drag-and-drop handlers
@@ -221,9 +222,9 @@ const BugBoard = ({ toggleMobileMenu }) => {
       // If status hasn't changed, do nothing
       if (oldStatus === newStatus) return;
 
-      // Optimistic update
+      // Use patchBug for partial status update (fixes persistence bug)
       try {
-        await updateBug(bugId, { status: newStatus });
+        await patchBug(bugId, { status: newStatus });
         toast.success(`Bug moved to ${newStatus.replace('-', ' ')}`);
       } catch (error) {
         console.error('Status update error:', error);
@@ -231,7 +232,7 @@ const BugBoard = ({ toggleMobileMenu }) => {
         // The useBugs hook should handle reverting the optimistic update
       }
     },
-    [bugs, updateBug]
+    [bugs, patchBug]
   );
 
   const handleDragCancel = useCallback(() => {
